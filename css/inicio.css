@@ -989,6 +989,10 @@ h1:hover{
         height: 100%;
     }
 
+    .contenido-hover{
+        background-color: transparent;
+    }
+
     .info-detalles {
         left: 0;
         padding: 0 2px;
