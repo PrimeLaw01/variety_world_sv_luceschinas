@@ -1025,6 +1025,11 @@ h1:hover{
     .btn-agregar-carrito {
         padding: 4px 8px;
         font-size: 0.7rem;
+
+        cursor: pointer;
+        min-width: 120px;
+        z-index: 999;
+        position: relative;
     }
     
     .unidades-texto {
