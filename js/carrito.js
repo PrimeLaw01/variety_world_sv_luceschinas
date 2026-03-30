@@ -303,7 +303,7 @@ function configurarBotonesCheckout(carrito) {
             }
 
             if (!selectPago || selectPago.value === "") {
-                alert("⚠️ Por favor selecciona un método de pago.");
+                alert("⚠️ Por favor, selecciona un método de pago.");
                 if (selectPago) selectPago.focus(); 
                 return;
             }
@@ -311,7 +311,7 @@ function configurarBotonesCheckout(carrito) {
             const costo = parseFloat(selectZona.value) || 0;
             
             if (costo > 0 && (!inputDireccion || inputDireccion.value.trim().length < 5)) {
-                alert("⚠️ Por favor ingresa una dirección de entrega válida.");
+                alert("⚠️ Por favor, ingresa una dirección de entrega válida.");
                 if (inputDireccion) inputDireccion.focus(); 
                 return;
             }
@@ -363,6 +363,7 @@ function configurarFormularioInvitado() {
     }
 }
 
+
 async function procesarPedidoBD(userId, nombreCliente) {
     const { costoEnvio, nombreZona, direccion, metodoPago, carrito, totalProductos } = datosPedidoTemporal;
     const totalFinal = totalProductos + costoEnvio;
@@ -373,7 +374,7 @@ async function procesarPedidoBD(userId, nombreCliente) {
         if (btnMain) { btnMain.innerText = "Procesando..."; btnMain.disabled = true; }
         if (btnGuest) { btnGuest.innerText = "Procesando..."; btnGuest.disabled = true; }
 
-        // 2. INSERCIÓN DEL PEDIDO
+        // Para insertar el pedido en Supabase
         const { data: pedidoData, error: pedidoError } = await supabase
             .from('pedidos')
             .insert([{
@@ -391,8 +392,9 @@ async function procesarPedidoBD(userId, nombreCliente) {
 
         if (pedidoError) throw pedidoError;
         const nuevoIdPedido = pedidoData[0].id_pedido;
+        const idCorto = nuevoIdPedido.slice(0, 6);
 
-        // 3. DETALLES Y ACTUALIZACIÓN DE STOCK
+        
         for (const prod of carrito) {
             await supabase.from('detalles_pedido').insert([{
                 id_pedido: nuevoIdPedido,
@@ -414,7 +416,6 @@ async function procesarPedidoBD(userId, nombreCliente) {
             }
         }
 
-        // 4. FACTURACIÓN
         await supabase.from('facturacion_envio').insert([{
             id_pedido: nuevoIdPedido,
             nombre_factura: nombreCliente,
@@ -423,15 +424,36 @@ async function procesarPedidoBD(userId, nombreCliente) {
             requiere_factura_electronica: false
         }]);
 
-        alert(`¡Gracias por tu compra! Tu pedido #${nuevoIdPedido.slice(0, 6)} ha sido recibido.`);
+        
+        let mensajeWp = `*NUEVO PEDIDO #${idCorto}*\n\n`;
+        mensajeWp += `*Cliente:* ${nombreCliente}\n`;
+        mensajeWp += `*Método de Pago:* ${metodoPago}\n`;
+        mensajeWp += `*Zona:* ${nombreZona}\n`;
+        mensajeWp += `*Dirección:* ${direccion}\n\n`;
+        mensajeWp += `*Productos:*\n`;
+        
+        carrito.forEach(p => {
+            const codigo = p.codigo_producto || "Sin código"; 
+            mensajeWp += `- [${codigo}] ${p.cantidad}x ${p.nombre} ($${(p.precio * p.cantidad).toFixed(2)})\n`;
+        });
+
+        mensajeWp += `\n*TOTAL A PAGAR:$${totalFinal.toFixed(2)}*`;
+
+        // Abrir WhatsApp
+        const urlWp = `https://wa.me/50377622211?text=${encodeURIComponent(mensajeWp)}`;
+        window.open(urlWp, '_blank');
+
+
+        alert(`¡Gracias por tu compra! Tu pedido #${idCorto} ha sido recibido.`);
         localStorage.removeItem('carrito_compras');
 
-        window.location.href = userId ? "perfil.html" : "../index.html";
+        setTimeout(() => {
+            window.location.href = userId ? "perfil.html" : "../index.html";
+        }, 500);
 
     } catch (error) {
         console.error("Error al procesar:", error);
         alert("Hubo un error al guardar el pedido.");
-        // Re-habilitar botones si hay error
     }
 }
 

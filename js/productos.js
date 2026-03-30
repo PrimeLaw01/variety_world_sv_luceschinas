@@ -406,7 +406,8 @@ function iniciarSistemaProductos() {
                 nombre: productoSeleccionado.nombre,
                 precio: parseFloat(productoSeleccionado.precio_unitario),
                 imagen: imgConvertida,
-                cantidad: cant
+                cantidad: cant,
+                codigo_producto: productoSeleccionado.codigo_producto
             });
         }
 
