@@ -54,7 +54,7 @@ export async function cargarProductos() {
     const tbody = document.getElementById('tabla-productos-body');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Cargando...</td></tr>';
 
     const { data, error } = await supabase
         .from('productos')
@@ -62,7 +62,7 @@ export async function cargarProductos() {
         .order('id_producto', { ascending: true });
 
     if (error) {
-        tbody.innerHTML = '<tr><td colspan="6">Error al cargar datos</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7">Error al cargar datos</td></tr>';
         return;
     }
 
@@ -72,7 +72,12 @@ export async function cargarProductos() {
         data.forEach(p => {
             const img = convertirUrlImagen(p.imagen_url);
             const codigo = p.codigo_producto ? `<br><small style="color:#E6B325;">${p.codigo_producto}</small>` : '';
-            const jsonP = JSON.stringify(p).replace(/'/g, "'");
+
+            const badgeVisible = p.visible 
+                ? '<span style="background:#2ecc71; color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold;">VISIBLE</span>' 
+                : '<span style="background:#E62525; color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold;">OCULTO</span>';
+
+            const jsonP = JSON.stringify(p).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
             tbody.innerHTML += `
                 <tr>
@@ -85,14 +90,17 @@ export async function cargarProductos() {
                         ${p.nombre}
                         ${codigo}
                     </td>
-                    <td>$${p.precio_unitario}</td>
+                    <td>$${parseFloat(p.precio_unitario).toFixed(2)}</td>
                     <td style="font-weight:bold; color:${p.stock < 5 ? '#ff4757' : '#fff'}">${p.stock}</td>
                     <td>${p.porcentaje_descuento || 0}%</td>
-                    <td>
+                    
+                    <td style="text-align:center;">${badgeVisible}</td>
+
+                    <td style="white-space: nowrap;">
                         <button class="btn-action" onclick='window.prepararEdicionProducto(${jsonP})'>
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button class="btn-action" onclick="window.eliminarProducto('${p.id_producto}')" style="background-color:#E62525; border-color:#E62525;">
+                        <button class="btn-action" onclick="window.eliminarProducto('${p.id_producto}')" style="background-color:#E62525; border-color:#F8F8F8;">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -196,6 +204,8 @@ export function prepararCreacionProducto() {
     document.getElementById('upload-progress-bar').style.display = 'none';
 
 
+    document.getElementById('prod-visible').checked = true;
+
     cargarCategoriasEnDatalist();
     abrirModal('modalProductoAdmin');
 }
@@ -219,6 +229,8 @@ export function prepararEdicionProducto(prod) {
     document.getElementById('prod-imagen-file').value = '';
     document.getElementById('upload-progress-bar').style.display = 'none';
 
+
+    document.getElementById('prod-visible').checked = prod.visible !== false;
 
     cargarCategoriasEnDatalist();
     abrirModal('modalProductoAdmin');
@@ -263,6 +275,7 @@ export async function guardarProducto(e) {
             categoria: document.getElementById('prod-categoria').value,
             descripcion: document.getElementById('prod-desc').value,
             unidades_por_paquete: document.getElementById('prod-paquete').value,
+            visible: document.getElementById('prod-visible').checked,
             video_url: document.getElementById('input-url-video').value || null
         };
 

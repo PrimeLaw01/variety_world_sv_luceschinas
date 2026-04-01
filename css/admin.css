@@ -328,16 +328,17 @@ header {
 }
 
 .modal-overlay {
-    display: none;
+    display: none; 
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    z-index: 99999 !important;
     justify-content: center;
     align-items: center;
     backdrop-filter: blur(5px);
     padding: 10px;
+    filter: none !important;
 }
 
 .modal-content {
@@ -354,6 +355,7 @@ header {
     max-height: 90vh;
     overflow-y: auto;
 }
+
 
 #formProducto , label, input{
     background-color: transparent;
@@ -690,3 +692,63 @@ header {
 }
 
 
+.switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #151538 !important;
+    padding: 12px 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid #5D4037;
+}
+
+.switch-label {
+    color: #E6B325 !important;
+    font-weight: bold;
+    font-size: 0.95rem;
+    background: transparent !important;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background: transparent !important;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2ecc71;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}

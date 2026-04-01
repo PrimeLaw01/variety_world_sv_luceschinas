@@ -608,6 +608,101 @@ input[type=number] {
     padding: 10px;
 }
 
+.producto-agotado {
+    filter: grayscale(1) !important;
+    opacity: 0.6 !important;
+    pointer-events: none;
+    position: relative;
+}
+
+.badge-agotado {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #E62525;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 5;
+}
+
+/* Contenedor del Switch */
+.switch-container {
+    background: #151538;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #5D4037;
+}
+
+.switch-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.switch-label {
+    color: #E6B325;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Estilos del Switch (El interruptor) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0; /* Evita quese encoja en móviles */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #555;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2ecc71; /* Verde cuando está activo */
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Ajuste para pantallas muy pequeñas (Teléfonos) */
+@media (max-width: 480px) {
+    .switch-container {
+        padding: 12px;
+    }
+    .switch-label {
+        font-size: 0.9rem;
+    }
+}
+
 /* CLASE PARA EL CONTENEDOR MIENTRAS CARGA */
 .esqueleto-loader {
     display: grid;

@@ -21,6 +21,10 @@ export function abrirModal(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
         modal.style.display = 'flex';
+
+        const footer = document.querySelector('.pie-principal');
+        if (footer) footer.style.display = 'none';
+
     }
 }
 
@@ -28,6 +32,9 @@ export function cerrarModal(idModal) {
     const modal = document.getElementById(idModal);
     if (modal) {
         modal.style.display = 'none';
+
+        const footer = document.querySelector('.pie-principal');
+        if (footer) footer.style.display = 'block';
     }
 }
 

@@ -152,6 +152,7 @@
                                 <th>Precio</th>
                                 <th>Stock</th>
                                 <th>Desc. %</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -247,7 +248,7 @@
     <div id="modalProductoAdmin" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModal('modalProductoAdmin')">&times;</span>
-            <h2 id="tituloModalProducto">Gestión de Producto</h2>
+            <h2 id="tituloModalProducto">Gestión de producto</h2>
             
             <form id="formProducto">
                 <input type="hidden" id="prod-id">
@@ -259,7 +260,7 @@
                 </div>
 
                 <div id="msg-producto-encontrado" class="info-producto-encontrado">
-                    <h3 id="txt-nombre-encontrado">Nombre del Producto</h3>
+                    <h3 id="txt-nombre-encontrado">Nombre del producto</h3>
                     <p>Precio actual: <span id="txt-precio-encontrado">$0.00</span></p>
                     <p style="color:#4CAF50; margin-top:5px; font-size:0.8rem;">Modo: Actualización rápida de Stock</p>
                 </div>
@@ -317,6 +318,16 @@
                         <label>Descripción:</label>
                         <textarea id="prod-desc"></textarea>
                     </div>
+
+                    <div class="switch-container">
+                        <span class="switch-label">Mostrar producto al cliente</span>
+                        <label class="switch">
+                            <input type="checkbox" id="prod-visible" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+
                 </div>
 
                 <button type="submit" class="btn-checkout" id="btn-guardar-producto">Guardar Producto</button>
@@ -516,6 +527,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="../js/admin/main.js"></script>
     
+    <!--
     <script>
         document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
         document.onkeydown = function (e) {
@@ -525,6 +537,7 @@
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         }
     </script>
+    -->
     
 </body>
 </html>

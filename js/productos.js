@@ -107,6 +107,7 @@ function iniciarSistemaProductos() {
                 
                 const { data, error } = await sb.from('productos')
                     .select('id_producto, nombre, precio_unitario, imagen_url, stock, categoria, codigo_producto, descripcion, porcentaje_descuento, unidades_por_paquete, video_url')
+                    .eq('visible', true)
                     .or(`nombre.ilike.%${termino}%,codigo_producto.ilike.%${termino}%,categoria.ilike.%${termino}%`)
                     .order('id_producto', { ascending: true });
                 
@@ -115,7 +116,7 @@ function iniciarSistemaProductos() {
             } else {
                 const fetchCatalogo = async () => {
                     return await sb.from('productos')
-                        .select('id_producto, nombre, precio_unitario, imagen_url, stock, categoria, codigo_producto, descripcion, porcentaje_descuento, unidades_por_paquete, video_url')
+                        .select('*')
                         .order('id_producto', { ascending: true });
                 };
 
@@ -228,24 +229,35 @@ function iniciarSistemaProductos() {
     }
 
     function crearTarjetaHTML(p) {
-        const codigoHtml = p.codigo_producto ? `<small style="display:block; color:#666; font-size:0.8em; margin-bottom:1px; font-weight:bold; background-color:transparent;">Cód: ${p.codigo_producto}</small>` : '';
-        
-        const imagenValida = convertirUrlImagen(p.imagen_url);
+    const codigoHtml = p.codigo_producto ? `<small style="display:block; color:#666; font-size:0.8em; margin-bottom:1px; font-weight:bold; background-color:transparent;">Cód: ${p.codigo_producto}</small>` : '';
+    
+    const imagenValida = convertirUrlImagen(p.imagen_url);
 
-        return `
-            <div class="cajaProducto">
-                <div class="imagenProducto">
-                    <img src="${imagenValida}" onerror="this.src='https://via.placeholder.com/300x220?text=Sin+Foto'" onclick="abrirModal('${p.id_producto}')">
-                </div>
-                <div class="info-tarjeta" onclick="abrirModal('${p.id_producto}')">
-                    ${codigoHtml}
-                    <h3 class="nombreProducto">${p.nombre}</h3>
-                    <p class="precioProducto">$${parseFloat(p.precio_unitario).toFixed(2)}</p>
-                </div>
-                <button class="btn-ver-mas" onclick="abrirModal('${p.id_producto}')">Ver más información</button>
+    const esVisible = p.visible !== false; 
+    const claseAgotado = esVisible ? '' : 'producto-agotado';
+    const textoBoton = esVisible ? 'Ver más información' : 'Agotado temporalmente';
+    const badgeAgotado = !esVisible ? '<div class="badge-agotado">AGOTADO</div>' : '';
+
+    return `
+        <div class="cajaProducto ${claseAgotado}">
+            <div class="imagenProducto" style="position: relative;">
+                ${badgeAgotado}
+                <img src="${imagenValida}" 
+                    onerror="this.src='https://via.placeholder.com/300x220?text=Sin+Foto'" 
+                    onclick="abrirModal('${p.id_producto}')"
+                    style="${!esVisible ? 'cursor: not-allowed;' : 'cursor: pointer;'}">
             </div>
-        `;
-    }
+            <div class="info-tarjeta" onclick="abrirModal('${p.id_producto}')">
+                ${codigoHtml}
+                <h3 class="nombreProducto">${p.nombre}</h3>
+                <p class="precioProducto">$${parseFloat(p.precio_unitario).toFixed(2)}</p>
+            </div>
+            <button class="btn-ver-mas" onclick="abrirModal('${p.id_producto}')" ${!esVisible ? 'style="background-color: #555; border-color: #555;"' : ''}>
+                ${textoBoton}
+            </button>
+        </div>
+    `;
+}
     
     //Función para producto más vendido:
     async function registrarVisita(idProducto) {
