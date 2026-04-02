@@ -17,6 +17,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    
+    <link rel="stylesheet" href="../css/productos/productos.css">
     
 </head>
 <body>
@@ -62,6 +65,18 @@
             </div>
         </section>
     </header>
+
+    <div class="main-content-wrapper barra-horizontal">
+        <section class="categorias" id="sidebar-categorias">
+            <div class="category">
+                <a href="../html/productos.html"><h3>Ver Todos</h3></a>
+            </div>
+            
+            <div id="lista-categorias-dinamica" style="display: flex; gap: 15px; background-color: transparent;"></div>
+        </section>
+        
+        <div id="contenedor-principal" style="display:none;"></div>
+    </div>
 
     <main>
 
@@ -164,6 +179,8 @@
 
     <script src="../js/envios.js"></script>
     <script type="module" src="../js/busqueda.js"></script>
+    
+    <script src="../js/productos.js"></script>
 
 
     <script>

@@ -3,16 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function iniciarSistema() {
-    const SUPABASE_URL = 'https://fpmsddnonhiqxnsydfpz.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZwbXNkZG5vbmhpcXhuc3lkZnB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MTE4NTAsImV4cCI6MjA3ODQ4Nzg1MH0.Lj3q5iOHpGzBhwul1yPx4jxoSB9u-blu5EYJ6lsftXY';
+    const sb = window.supabase; 
     
-    if (typeof supabase === 'undefined') return;
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if (!sb) {
+        console.error("Error: Supabase no se ha cargado en el navegador.");
+        return;
+    }
 
     let itemSeleccionado = null;
     let listaMedios = [];
     let indiceMediaActual = 0;
-
+    
+    
     const inputManual = document.getElementById('inputCantidad');
     if (inputManual) {
         inputManual.removeAttribute('readonly');
@@ -236,7 +238,7 @@ function iniciarSistema() {
             
             if (error) throw error;
             contenedor.innerHTML = '';
-            if (!productos.length) { contenedor.innerHTML = '<p style="color:#fff;">No hay ofertas.</p>'; return; }
+            if (!productos.length) { contenedor.innerHTML = '<p style="color:#fff;">No hay ofertas disponibles por el momento.</p>'; return; }
             
             productos.forEach(prod => {
                 

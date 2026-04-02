@@ -941,3 +941,93 @@ input:checked + .slider:before {
         padding: 20px;
     }
 }
+
+
+/* Estilos para la barra en donde no es "Productos" */
+.barra-horizontal {
+    background-color: transparent;
+}
+
+.barra-horizontal a{
+    background-color: transparent;
+}
+
+.barra-horizontal .categorias {
+    background-color: transparent;
+}
+
+.barra-horizontal .category {
+    background-color: transparent;
+    border: none !important;
+}
+
+.barra-horizontal .categorias {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 60px !important;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    background-color: transparent !important;
+    border-bottom: 2px solid #E6B325 !important;
+    padding: 10px 15px !important;
+    gap: 12px !important;
+    white-space: nowrap !important;
+    background-color: transparent;
+}
+
+/* Estilo para los botones dentro de la barra horizontal */
+.barra-horizontal .category a {
+    display: inline-block !important;
+    background-color: rgba(230, 179, 37, 0.15) !important;
+    border: 1px solid #E6B325 !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    text-decoration: none !important;
+}
+
+.barra-horizontal .categorias::-webkit-scrollbar {
+    height: 4px;
+}
+.barra-horizontal .categorias::-webkit-scrollbar-thumb {
+    background: #E6B325;
+    border-radius: 10px;
+}
+
+.barra-horizontal .category a:hover {
+    background-color: #E6B325 !important;
+}
+
+.barra-horizontal .category a:hover h3 {
+    color: #070519 !important;
+}
+
+.barra-horizontal .category h3 {
+    color: #F8F8FF !important;
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+    font-weight: bold !important;
+    background: transparent !important;
+}
+
+@media (max-width: 768px) {
+    
+    .barra-horizontal .categorias {
+        margin-top: 10px !important; 
+        
+        padding: 10px 15px !important; 
+        
+        min-height: 60px !important;
+        align-items: center !important;
+        display: flex !important;
+        
+        background-color: #0A0A23 !important;
+    }
+
+    .barra-horizontal .category a {
+        padding: 8px 14px !important;
+        line-height: 1.2 !important;
+    }
+}

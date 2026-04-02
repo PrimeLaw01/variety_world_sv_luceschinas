@@ -87,6 +87,8 @@ function iniciarSistemaProductos() {
 
     async function obtenerProductos() {
         const contenedorMain = document.getElementById('contenedor-principal');
+        
+        // Mostramos esqueletos de carga solo si existe el contenedor (página de productos)
         if (contenedorMain) {
             contenedorMain.innerHTML = `
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; padding:20px;">
@@ -101,89 +103,94 @@ function iniciarSistemaProductos() {
             const termino = urlParams.get('q');
             let productos = [];
 
-            if (termino) {
-                const inputB = document.getElementById('inputBusquedaGlobal');
-                if(inputB) inputB.value = termino;
-                
-                const { data, error } = await sb.from('productos')
-                    .select('id_producto, nombre, precio_unitario, imagen_url, stock, categoria, codigo_producto, descripcion, porcentaje_descuento, unidades_por_paquete, video_url')
-                    .eq('visible', true)
-                    .or(`nombre.ilike.%${termino}%,codigo_producto.ilike.%${termino}%,categoria.ilike.%${termino}%`)
+            // 1. Intentamos obtener los productos (necesarios para extraer las categorías)
+            const fetchCatalogo = async () => {
+                return await sb.from('productos')
+                    .select('*')
                     .order('id_producto', { ascending: true });
-                
-                if (error) throw error;
-                productos = data;
-            } else {
-                const fetchCatalogo = async () => {
-                    return await sb.from('productos')
-                        .select('*')
-                        .order('id_producto', { ascending: true });
-                };
+            };
 
-                const resultado = await obtenerDatosConCache('catalogo_global', fetchCatalogo, 30);
-                if (resultado.error) throw resultado.error;
-                productos = resultado.data;
-            }
-
+            const resultado = await obtenerDatosConCache('catalogo_global', fetchCatalogo, 30);
+            if (resultado.error) throw resultado.error;
+            
+            productos = resultado.data;
             productos.forEach(p => p.stock = Number(p.stock));
             inventarioGlobal = productos;
             
             ajustarStockVisual();
 
+            // 2. CARGAR SIEMPRE LA BARRA DE CATEGORÍAS (Para todas las páginas)
+            generarVistaDinamica(inventarioGlobal);
+
+            // 3. Lógica específica si estamos en Productos.html o resultados de búsqueda
             if (termino) {
-                mostrarResultadosBusqueda(productos, termino);
-            } else {
-                generarVistaDinamica(inventarioGlobal);
-
-                const urlParams = new URLSearchParams(window.location.search);
+                const inputB = document.getElementById('inputBusquedaGlobal');
+                if(inputB) inputB.value = termino;
+                
+                const filtrados = inventarioGlobal.filter(p => 
+                    p.nombre.toLowerCase().includes(termino.toLowerCase()) || 
+                    p.codigo_producto?.toLowerCase().includes(termino.toLowerCase()) ||
+                    p.categoria?.toLowerCase().includes(termino.toLowerCase())
+                );
+                mostrarResultadosBusqueda(filtrados, termino);
+            } else if (contenedorMain) {
+                // Si no hay búsqueda y hay contenedor, mostramos el catálogo normal
+                generarVistaDinamica(inventarioGlobal); // Re-ejecuta para pintar productos
+                
                 const categoriaDestino = urlParams.get('cat');
-
                 if (categoriaDestino) {
                     setTimeout(() => {
                         const seccion = Array.from(document.querySelectorAll('.seccionProductos'))
                                             .find(sec => sec.dataset.categoria === categoriaDestino);
-                        
-                        if (seccion) {
-                            seccion.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        if (seccion) seccion.scrollIntoView({ behavior: 'smooth' });
                     }, 500); 
                 }
             }
 
-        } catch (error) { console.error(error); }
+        } catch (error) { 
+            console.error("Error en sistema de productos:", error); 
+        }
     }
 
     function generarVistaDinamica(productos) {
         const sidebar = document.getElementById('lista-categorias-dinamica');
         const contenedorMain = document.getElementById('contenedor-principal');
         
-        if (!sidebar || !contenedorMain) return;
+        if (!sidebar) return;
 
         sidebar.innerHTML = '';
-        contenedorMain.innerHTML = '';
+        // Solo limpiamos el main si existe
+        if (contenedorMain) contenedorMain.innerHTML = '';
 
         const categoriasUnicas = [...new Set(productos.map(p => p.categoria))].filter(c => c).sort();
 
         categoriasUnicas.forEach(cat => {
             const divLink = document.createElement('div');
             divLink.className = 'category';
-            divLink.innerHTML = `<a href="#" onclick="window.filtrarPorCategoria('${cat}', event)"><h3>${cat}</h3></a>`;
+            
+            // Verificamos si estamos en la página de productos
+            const esPaginaProductos = window.location.pathname.includes('productos.html');
+            
+            // Si estamos en Carrito/Inicio, el link debe llevar a productos.html con el parámetro ?cat=
+            const href = esPaginaProductos ? '#' : `../html/productos.html?cat=${encodeURIComponent(cat)}`;
+            const onClick = esPaginaProductos ? `onclick="window.filtrarPorCategoria('${cat}', event)"` : '';
+
+            divLink.innerHTML = `<a href="${href}" ${onClick}><h3>${cat}</h3></a>`;
             sidebar.appendChild(divLink);
 
-            const seccion = document.createElement('div');
-            seccion.className = 'seccionProductos';
-            seccion.id = `seccion-${btoa(cat).replace(/=/g, '')}`; 
-            seccion.dataset.categoria = cat;
-
-            seccion.innerHTML = `<h2 class="titulos-secciones">${cat}</h2>`;
-            
-            const prodsDeEstaCategoria = productos.filter(p => p.categoria === cat);
-            
-            prodsDeEstaCategoria.forEach(p => {
-                seccion.innerHTML += crearTarjetaHTML(p);
-            });
-
-            contenedorMain.appendChild(seccion);
+            // Solo dibujamos las tarjetas de productos si el contenedor existe (evita error en carrito)
+            if (contenedorMain && esPaginaProductos) {
+                const seccion = document.createElement('div');
+                seccion.className = 'seccionProductos';
+                seccion.dataset.categoria = cat;
+                seccion.innerHTML = `<h2 class="titulos-secciones">${cat}</h2>`;
+                
+                const prodsDeEstaCategoria = productos.filter(p => p.categoria === cat);
+                prodsDeEstaCategoria.forEach(p => {
+                    seccion.innerHTML += crearTarjetaHTML(p);
+                });
+                contenedorMain.appendChild(seccion);
+            }
         });
     }
 
@@ -277,6 +284,14 @@ function iniciarSistemaProductos() {
     window.abrirModal = (id) => {
         productoSeleccionado = inventarioGlobal.find(p => p.id_producto == id);
         if (!productoSeleccionado) return;
+
+        const modal = document.getElementById('modalProducto');
+        if (!modal) {
+            // Si no hay modal (ej. en el Carrito), redirigimos al producto
+            const p = inventarioGlobal.find(prod => prod.id_producto == id);
+            if(p) window.location.href = `productos.html?code=${p.codigo_producto}`;
+            return;
+        }
 
         registrarVisita(id);
         

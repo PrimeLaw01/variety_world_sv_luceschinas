@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="../css/productos/quienesSomos.css">
     <link rel="stylesheet" href="../css/pie.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    
+    <link rel="stylesheet" href="../css/productos/productos.css">
+    
 </head>
 
 <body>
@@ -59,6 +63,18 @@
             </div>
         </section>
     </header>
+
+    <div class="main-content-wrapper barra-horizontal">
+        <section class="categorias" id="sidebar-categorias">
+            <div class="category">
+                <a href="../html/productos.html"><h3>Ver Todos</h3></a>
+            </div>
+            
+            <div id="lista-categorias-dinamica" style="display: flex; gap: 15px; background-color: transparent;"></div>
+        </section>
+        
+        <div id="contenedor-principal" style="display:none;"></div>
+    </div>
 
     <!--Sección sobre nosotros-->
     <section>
@@ -222,6 +238,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script type="module" src="../js/busqueda.js"></script>
+    
+    <script src="../js/productos.js"></script>
 
 
     <script>

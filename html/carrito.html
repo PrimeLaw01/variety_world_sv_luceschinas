@@ -9,6 +9,8 @@
     
     <link rel="stylesheet" href="../css/encabezado.css">
     <link rel="stylesheet" href="../css/pie.css">
+    
+    <link rel="stylesheet" href="../css/productos/productos.css">
     <link rel="stylesheet" href="../css/productos/carrito.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -54,6 +56,18 @@
             </div>
         </section>
     </header>
+
+    <div class="main-content-wrapper barra-horizontal">
+        <section class="categorias" id="sidebar-categorias">
+            <div class="category">
+                <a href="../html/productos.html"><h3>Ver Todos</h3></a>
+            </div>
+            
+            <div id="lista-categorias-dinamica" style="display: flex; gap: 15px; background-color: transparent;"></div>
+        </section>
+        
+        <div id="contenedor-principal" style="display:none;"></div>
+    </div>
 
     <main class="carrito-wrapper">
         <h1 class="titulo-carrito">Tu Carrito de Compras</h1>
@@ -223,6 +237,8 @@
         </div>
     </div>
 
+
+    <script src="../js/productos.js"></script> <script src="../js/carrito.js"></script>
 
     <!-- Para proteger el código: -->
     <script>
