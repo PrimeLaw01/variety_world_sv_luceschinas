@@ -310,7 +310,7 @@ function configurarBotonesCheckout(carrito) {
 
             const costo = parseFloat(selectZona.value) || 0;
             
-            if (costo > 0 && (!inputDireccion || inputDireccion.value.trim().length < 5)) {
+            if (costo > 0 && (!inputDireccion || inputDireccion.value.trim().length < 0)) {
                 alert("⚠️ Por favor, ingresa una dirección de entrega válida.");
                 if (inputDireccion) inputDireccion.focus(); 
                 return;

@@ -270,6 +270,20 @@ span{
     transform: none;
 }
 
+#btn-finalizar{
+    width: 100%;
+    padding: 15px;
+    background-color: #E6B325;
+    color: #0A0A23;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
 .btn-whatsapp {
     width: 100%;
     padding: 12px;
